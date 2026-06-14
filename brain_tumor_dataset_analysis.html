@@ -1,0 +1,189 @@
+
+<h2 class="sr-only">Brain tumor MRI dataset analysis dashboard showing class distribution, imbalance metrics, and dataset challenges</h2>
+
+<div style="padding: 1rem 0;">
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">Total images</div>
+    <div style="font-size: 24px; font-weight: 500; color: var(--color-text-primary);">10,560</div>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">Classes</div>
+    <div style="font-size: 24px; font-weight: 500; color: var(--color-text-primary);">4</div>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">Imbalance ratio</div>
+    <div style="font-size: 24px; font-weight: 500; color: #c0392b;">2.14×</div>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; text-align: center;">
+    <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px;">Avg per class</div>
+    <div style="font-size: 24px; font-weight: 500; color: var(--color-text-primary);">2,640</div>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem;">
+
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem;">Class distribution</div>
+    <div style="position: relative; height: 220px;">
+      <canvas id="barChart" role="img" aria-label="Bar chart of brain tumor MRI class counts: glioma 3754, pituitary 2706, meningioma 2343, no tumor 1757"></canvas>
+    </div>
+  </div>
+
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.5rem;">Share of dataset</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-secondary);"><span style="width:10px;height:10px;border-radius:2px;background:#3B6D11;display:inline-block;"></span>Glioma 35.5%</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-secondary);"><span style="width:10px;height:10px;border-radius:2px;background:#185FA5;display:inline-block;"></span>Pituitary 25.6%</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-secondary);"><span style="width:10px;height:10px;border-radius:2px;background:#853508;display:inline-block;"></span>Meningioma 22.2%</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-text-secondary);"><span style="width:10px;height:10px;border-radius:2px;background:#5F5E5A;display:inline-block;"></span>No tumor 16.6%</span>
+    </div>
+    <div style="position: relative; height: 180px;">
+      <canvas id="pieChart" role="img" aria-label="Pie chart: glioma 35.5%, pituitary 25.6%, meningioma 22.2%, no tumor 16.6%"></canvas>
+    </div>
+  </div>
+</div>
+
+<div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+  <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem;">Imbalance relative to mean (2,640)</div>
+  <div id="imbalanceBars"></div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem;">
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem;">Class-level breakdown</div>
+    <table style="width:100%; font-size:12px; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left; color:var(--color-text-secondary); font-weight:400; padding:4px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">Class</th>
+          <th style="text-align:right; color:var(--color-text-secondary); font-weight:400; padding:4px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">Count</th>
+          <th style="text-align:right; color:var(--color-text-secondary); font-weight:400; padding:4px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">Share</th>
+          <th style="text-align:right; color:var(--color-text-secondary); font-weight:400; padding:4px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">vs mean</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem;">Key observations</div>
+    <div style="display:flex; flex-direction:column; gap: 10px;">
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:#c0392b; margin-top:6px;"></div>
+        <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.5;">Glioma overrepresented by <span style="color:var(--color-text-primary); font-weight:500;">+42%</span> above mean — model may over-predict glioma</div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:#c0392b; margin-top:6px;"></div>
+        <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.5;">No tumor class underrepresented by <span style="color:var(--color-text-primary); font-weight:500;">−33%</span> — dangerous in clinical settings (missed healthy cases)</div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:#e67e22; margin-top:6px;"></div>
+        <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.5;">Imbalance ratio 2.14× (glioma/no_tumor) — moderate severity, above the 1.5× warning threshold</div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:#27ae60; margin-top:6px;"></div>
+        <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.5;">Accuracy is misleading here — a model that always predicts glioma would hit <span style="color:var(--color-text-primary); font-weight:500;">35.5%</span>. Use macro F1</div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:#27ae60; margin-top:6px;"></div>
+        <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.5;">10,560 total images is a reasonable dataset size for CNN training with augmentation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const data = [
+  { label: 'Glioma',      count: 3754, color: '#3B6D11' },
+  { label: 'Pituitary',   count: 2706, color: '#185FA5' },
+  { label: 'Meningioma',  count: 2343, color: '#853508' },
+  { label: 'No tumor',    count: 1757, color: '#5F5E5A' },
+];
+const total = data.reduce((s,d) => s + d.count, 0);
+const mean  = Math.round(total / data.length);
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: data.map(d => d.label),
+    datasets: [{
+      data: data.map(d => d.count),
+      backgroundColor: data.map(d => d.color),
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { font: { size: 11 }, color: '#888' }, grid: { display: false } },
+      y: {
+        ticks: { font: { size: 10 }, color: '#888', callback: v => v.toLocaleString() },
+        grid: { color: 'rgba(128,128,128,0.15)' },
+        min: 0, max: 4200
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: data.map(d => d.label),
+    datasets: [{
+      data: data.map(d => d.count),
+      backgroundColor: data.map(d => d.color),
+      borderWidth: 2,
+      borderColor: 'transparent'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw.toLocaleString()} (${(ctx.raw/total*100).toFixed(1)}%)` }
+    }}
+  }
+});
+
+const tbody = document.getElementById('tableBody');
+data.forEach(d => {
+  const pct   = (d.count / total * 100).toFixed(1);
+  const diff  = d.count - mean;
+  const sign  = diff >= 0 ? '+' : '';
+  const dPct  = (diff / mean * 100).toFixed(0);
+  const dColor = diff >= 0 ? '#c0392b' : '#27ae60';
+  tbody.innerHTML += `
+    <tr>
+      <td style="padding:6px 0; color:var(--color-text-primary); display:flex; align-items:center; gap:6px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:${d.color};display:inline-block;"></span>${d.label}
+      </td>
+      <td style="padding:6px 0; text-align:right; color:var(--color-text-primary);">${d.count.toLocaleString()}</td>
+      <td style="padding:6px 0; text-align:right; color:var(--color-text-secondary);">${pct}%</td>
+      <td style="padding:6px 0; text-align:right; color:${dColor}; font-weight:500;">${sign}${dPct}%</td>
+    </tr>`;
+});
+
+const imbalDiv = document.getElementById('imbalanceBars');
+data.forEach(d => {
+  const pct = d.count / 4200 * 100;
+  const meanPct = mean / 4200 * 100;
+  imbalDiv.innerHTML += `
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--color-text-secondary); margin-bottom:3px;">
+        <span>${d.label}</span>
+        <span style="color:var(--color-text-primary);">${d.count.toLocaleString()}</span>
+      </div>
+      <div style="background:var(--color-background-secondary); border-radius:4px; height:10px; width:100%; position:relative;">
+        <div style="background:${d.color}; width:${pct.toFixed(1)}%; height:100%; border-radius:4px;"></div>
+        <div style="position:absolute; top:-2px; left:${meanPct.toFixed(1)}%; width:2px; height:14px; background:#e74c3c; border-radius:1px;"></div>
+      </div>
+    </div>`;
+});
+imbalDiv.innerHTML += `<div style="font-size:11px; color:var(--color-text-secondary); margin-top:4px;"><span style="display:inline-block;width:10px;height:2px;background:#e74c3c;vertical-align:middle;margin-right:4px;"></span>Red line = mean (2,640)</div>`;
+</script>
